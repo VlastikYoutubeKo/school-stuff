@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generátor Hesel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Generátor Hesel</h1>
+
+    <p>Bezpečná hesla jsou klíčová pro ochranu vašich účtů. Níže naleznete informace o tom, jak vytvořit silná hesla a také jednoduchý generátor hesel.</p>
+
+    <h2>Jak Vytvořit Silné Heslo</h2>
+    <ul>
+        <li><strong>Délka:</strong> Heslo by mělo mít alespoň 12 znaků.</li>
+        <li><strong>Kombinace znaků:</strong> Používejte malá a velká písmena, číslice a speciální znaky.</li>
+        <li><strong>Nečitelná slova:</strong> Vyhněte se používání běžných slov, jmen a frází.</li>
+        <li><strong>Neopakujte hesla:</strong> Nepoužívejte stejné heslo pro více účtů.</li>
+        <li><strong>Náhodnost:</strong> Heslo by mělo být co nejvíce náhodné.</li>
+        <li><strong>Aktualizace hesla:</strong> Pravidelně měňte hesla.</li>
+    </ul>
+
+    <h2>Generátor Hesel</h2>
+    <p>Zadejte délku hesla a klikněte na tlačítko "Generovat heslo".</p>
+    
+    <label for="passwordLength">Délka hesla:</label>
+    <input type="number" id="passwordLength" min="8" max="20" value="12">
+    
+    <button onclick="generatePassword()">Generovat heslo</button>
+    
+    <p id="generatedPassword"></p>
+
+    <script>
+        function generatePassword() {
+            const length = document.getElementById('passwordLength').value;
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=";
+            let password = "";
+            
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            
+            document.getElementById('generatedPassword').innerText = "Vygenerované heslo: " + password;
+        }
+    </script>
+
+</body>
+</html>
