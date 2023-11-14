@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Secure Password Generator</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 15px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1, h2, p, code {
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #00688B;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://cdn.discordapp.com/attachments/1014144129090990159/1115976085142786100/Bez_nazvu.png" alt="Your Logo" width="100">
+        <h1>Your Secure Password Generator</h1>
+    </header>
+
+    <div class="container">
+        <h2>How to Create Strong Passwords?</h2>
+        <p>
+            Strong passwords are crucial for protecting your online accounts. Here are tips on creating a secure password:
+        </p>
+        <ol>
+            <li>Use a combination of lowercase and uppercase letters.</li>
+            <li>Include numbers and special characters.</li>
+            <li>Avoid using common words or phrases.</li>
+            <li>Use passwords with a length of at least 12 characters.</li>
+            <li>Update passwords regularly.</li>
+        </ol>
+
+        <h2>Password Generator</h2>
+        <p>
+            Enter the desired password length and click the "Generate and Download Password" button. You can then choose a location to save the file.
+        </p>
+        <label for="passwordLength" class="form-label">Password Length: </label>
+        <input type="number" id="passwordLength" class="form-control" min="1" max="50" value="12">
+        <button onclick="generateAndDownloadPassword()" class="btn btn-primary">Generate and Download Password</button>
+        <p><strong>Your Password:</strong> <span id="Password"></span></p> <p><strong>Your Hashed Password:</strong> <span id="hashedPassword"></span></p>
+
+    </div>
+
+    <!-- Bootstrap JS and Popper.js (if needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-e04j53hFmqe12jLmR/JFgDuL5XIl6m1/JCBtJSOW3S/onfE+AblBEcbZz40BCZdh" crossorigin="anonymous"></script>
+
+    <script>
+        async function generateAndDownloadPassword() {
+            const passwordLength = document.getElementById('passwordLength').value;
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=';
+            let password = '';
+            for (let i = 0; i < passwordLength; i++) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                password += characters.charAt(randomIndex);
+            }
+
+            // Hash the password using SHA-256
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashedPassword = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+
+            document.getElementById('Password').textContent = password;
+            document.getElementById('hashedPassword').textContent = hashedPassword;
+
+            // Create file content
+            const fileContent = `Password: ${password}\nHashed Password: ${hashedPassword}`;
+
+            // Create Blob object
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+
+            // Create download link
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'password.txt';
+            a.click();
+        }
+    </script>
+
+</body>
+</html>
