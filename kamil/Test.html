@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bezpečná Hesla - Návod a Generátor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+        h1, h2, p, code {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bezpečná Hesla - Návod a Generátor</h1>
+
+    <h2>Jak vytvářet silná hesla?</h2>
+    <p>
+        Silná hesla jsou klíčová pro ochranu vašich online účtů. Níže jsou uvedeny tipy, jak vytvořit bezpečné heslo:
+    </p>
+    <ol>
+        <li>Používejte kombinaci malých a velkých písmen.</li>
+        <li>Vložte čísla a speciální znaky.</li>
+        <li>Vyhýbejte se používání běžných slov nebo frází.</li>
+        <li>Používejte hesla s délkou alespoň 12 znaků.</li>
+        <li>Aktualizujte hesla pravidelně.</li>
+    </ol>
+
+    <h2>Generátor hesel a 2FA</h2>
+    <p>
+        Zadejte požadovanou délku hesla a klikněte na tlačítko "Generovat, zahashovat heslo a získat ověřovací kód". Poté si můžete stáhnout hesla ve formě textového souboru.
+    </p>
+    <label for="passwordLength">Délka hesla: </label>
+    <input type="number" id="passwordLength" min="1" max="50" value="12">
+    <button onclick="generateAndDownloadPassword()">Generovat, stáhnout heslo a získat 2FA kód</button>
+    <p><strong>Váš zahashované heslo:</strong> <span id="hashedPassword"></span></p>
+    <p><strong>Váš 2FA kód:</strong> <span id="twoFactorCode"></span></p>
+
+    <script>
+        async function generateAndDownloadPassword() {
+            const passwordLength = document.getElementById('passwordLength').value;
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=';
+            let password = '';
+            for (let i = 0; i < passwordLength; i++) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                password += characters.charAt(randomIndex);
+            }
+
+            // Hashování hesla pomocí SHA-256
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashedPassword = hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+
+            document.getElementById('hashedPassword').textContent = hashedPassword;
+
+            // Generování náhodného 2FA kódu (šestimístného)
+            const twoFactorCode = Math.floor(100000 + Math.random() * 900000);
+            document.getElementById('twoFactorCode').textContent = twoFactorCode;
+
+            // Vytvoření obsahu pro soubor
+            const fileContent = `Heslo: ${password}\nZahashované heslo: ${hashedPassword}\n2FA kód: ${twoFactorCode}`;
+
+            // Vytvoření Blob objektu
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+
+            // Vytvoření odkazu pro stažení
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'heslo.txt';
+            a.click();
+        }
+    </script>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script>
+        function login() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var otp = document.getElementById('otp').value;
+
+            // Zde byste vložili logiku ověření na straně klienta nebo serveru
+
+            // Příklad jednoduché kontroly
+            if (username === 'john_doe' && password === 'secret123' && otp === '123456') {
+                window.location.href = 'https://mxnticek.is-not-a.dev/school-stuff/hesla';
+            } else {
+                alert('Neplatné uživatelské jméno, heslo nebo OTP. Přihlášení selhalo.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Login</h2>
+    <label for="username">Username:</label>
+    <input type="text" id="username" required><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" required><br>
+    <label for="otp">One-Time Password:</label>
+    <input type="text" id="otp" required><br>
+    <button type="button" onclick="login()">Login</button>
+</body>
+</html>
